@@ -44,8 +44,8 @@ export class CollisionManager {
       ball.x > paddle.x &&
       ball.x < paddle.x + paddle.width
     ) {
-      // Reverse the vertical direction
-      ball.dy = -ball.dy;
+      // Set the vertical direction to move upward at consistent speed
+      ball.dy = -ball.speed;
 
       // Calculate impact factor based on where the ball hit the paddle
       // -1 for left edge, 0 for center, 1 for right edge

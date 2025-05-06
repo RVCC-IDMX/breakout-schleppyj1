@@ -20,11 +20,6 @@ export class Ball {
     this.speed = DEFAULTS.BALL_SPEED;
     this.dx = this.speed;
     this.dy = -this.speed;
-
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    this.draw(ctx);
-
   }
 
   update() {
@@ -53,10 +48,6 @@ export class Ball {
     if (this.y + this.size > this.game.height) {
       this.game.ballLost();
     }
-
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    this.draw(ctx);
   }
 
   draw(ctx) {
@@ -65,7 +56,7 @@ export class Ball {
 
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = '#0095DD';
+    ctx.fillStyle = '#ffffff';
     ctx.fill();
     ctx.closePath();
 
@@ -76,10 +67,12 @@ export class Ball {
     // - Return true if the ball's bounding box overlaps with the object's rectangle
     // - Remember to account for the ball's radius in the calculation
 
-    if (this.x >= object.x && this.x <= object.x + object.width
-      && this.y >= object.y && this.y <= object.y + object.height) {
-      return true;
-    }
+    return (
+      this.x + this.size > object.x &&
+      this.x - this.size < object.x + object.width &&
+      this.y + this.size > object.y &&
+      this.y - this.size < object.y + object.height
+    );
   }
 
   reset() {
@@ -87,11 +80,10 @@ export class Ball {
     // - Set position back to initial values
     // - Reset direction to initial values
 
-    this.x = game.width / 2;
-    this.y = game.height - 30;
+    this.x = this.game.width / 2;
+    this.y = this.game.height - 30;
     this.speed = DEFAULTS.BALL_SPEED;
     this.dx = this.speed;
     this.dy = -this.speed;
-
   }
 }

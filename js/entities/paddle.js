@@ -42,28 +42,26 @@ export class Paddle {
     // TODO: Draw the paddle on the canvas
     // - Set the fillStyle to '#0095DD' (or another color of your choice)
     // - Use fillRect to draw the paddle at (x, y) with the correct width and height
-    ctx.clearRect(0, this.y, this.game.width, this.y + this.height);
     ctx.fillStyle = '#0095DD';
     ctx.fillRect(this.x, this.y, this.width, this.height);
 
     ctx.strokeStyle = '#333333'; // Set outline color
     ctx.lineWidth = 2; // Set line width
     ctx.strokeRect(this.x, this.y, this.width, this.height);
-
   }
 
   moveLeft() {
     // TODO: Set the paddle's direction to move left
     // - Set dx to negative paddle speed
 
-    this.dx = -this.dx.PADDLE_SPEED;
+    this.dx = -this.speed;
   }
 
   moveRight() {
     // TODO: Set the paddle's direction to move right
     // - Set dx to positive paddle speed
 
-    this.dx = Math.abs(this.dx);
+    this.dx = this.speed;
   }
 
   stop() {
@@ -79,13 +77,15 @@ export class Paddle {
     // - Set the paddle's x position, centering it on the input x
     // - Make sure the paddle stays within the game boundaries
 
-    if (x <= this.game.width) {
-      this.x = x;
-      // this.update();
-      const canvas = document.getElementById('gameCanvas');
-      const ctx = canvas.getContext('2d');
-      this.draw(ctx);
-    }
+    // Center the paddle at the mouse position
+    this.x = x - (this.width / 2);
 
+    // Ensure the paddle stays within game boundaries
+    if (this.x < 0) {
+      this.x = 0;
+    }
+    if (this.x + this.width > this.game.width) {
+      this.x = this.game.width - this.width;
+    }
   }
 }

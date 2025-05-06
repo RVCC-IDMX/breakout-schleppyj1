@@ -65,13 +65,13 @@ export class Game {
     // - Call createEntities() to create the paddle and ball
     // - Call setupBricks() to create the brick layout
     // - Use ui.showScreen(GAME_STATES.START) to show the start screen
-    console.log('calling functions createEntities().');
+    // console.log('calling functions createEntities().');
     this.createEntities();
-    console.log('calling setupBricks().');
+    // console.log('calling setupBricks().');
     this.setupBricks();
-    console.log('Showing the start screen.');
+    // console.log('Showing the start screen.');
     this.ui.showScreen(GAME_STATES.START);
-    console.log('Return from show screen.');
+    // console.log('Return from show screen.');
   }
 
   // Create game entities
@@ -79,10 +79,10 @@ export class Game {
     // TODO: Create the paddle and ball
     // - Create a new Paddle instance and assign it to this.paddle
     // - Create a new Ball instance and assign it to this.ball
-    console.log('Creating ball and paddle.');
+    // console.log('Creating ball and paddle.');
 
     this.paddle = new Paddle(this);
-    console.log('Creating ball object.');
+    // console.log('Creating ball object.');
     this.ball = new Ball(this);
   }
 
@@ -105,28 +105,30 @@ export class Game {
     //    - Calculate its position (x, y) using BRICK_CONFIG
     //    - Assign a color based on the row (use BRICK_CONFIG.COLORS)
     //    - Create a new Brick instance and add it to the bricks array
-    console.log('creating brick layout.');
 
-    console.log('Clearing bricks array.');
-
+    // Clear the bricks array
     this.bricks = [];
 
-    console.log('Bricks array cleared.');
+    // Create the grid of bricks
+    for (let row = 0; row < BRICK_CONFIG.ROWS; row++) {
+      // Get color based on row index
+      const color = BRICK_CONFIG.COLORS[row % BRICK_CONFIG.COLORS.length];
 
-    console.log('Creating loops for bricks.');
+      for (let col = 0; col < BRICK_CONFIG.COLUMNS; col++) {
+        // Calculate position with proper spacing
+        const x = (BRICK_CONFIG.WIDTH + BRICK_CONFIG.PADDING) * col + BRICK_CONFIG.OFFSET_LEFT;
+        const y = (BRICK_CONFIG.HEIGHT + BRICK_CONFIG.PADDING) * row + BRICK_CONFIG.OFFSET_TOP;
 
-    for (let i = 0; i < BRICK_CONFIG.ROWS - 1; i++) {
-      console.log('Created inner for loop for columns.');
-      console.log('Setting a color for the rows.');
-      const color = '#0000FF';
-      for (let j = 0; j < BRICK_CONFIG.COLUMNS - 1; j++) {
-        console.log('Setting up the positions for the x and y axis.');
-        const position_x = BRICK_CONFIG.OFFSET_LEFT * 4 * j;
-        const position_y = BRICK_CONFIG.OFFSET_TOP * i;
-        console.log('Adding to bricks array.');
-        const bricks = new Brick(this, position_x, position_y, BRICK_CONFIG.HEIGHT,
-          BRICK_CONFIG.WIDTH, color);
-        this.bricks.push(bricks);
+        // Create brick and add to array
+        const brick = new Brick(
+          this,
+          x,
+          y,
+          BRICK_CONFIG.WIDTH,
+          BRICK_CONFIG.HEIGHT,
+          color
+        );
+        this.bricks.push(brick);
       }
     }
   }
@@ -138,10 +140,10 @@ export class Game {
     // 2. Use ui.showScreen(GAME_STATES.PLAYING) to show the playing screen
     // 3. Connect the input handler to the paddle (this.input.setPaddle(this.paddle))
     // 4. Start the game loop (call gameLoop())
-    console.log('Current game state is playing.');
+    // console.log('Current game state is playing.');
     this.gameState = GAME_STATES.PLAYING;
     this.ui.showScreen(GAME_STATES.PLAYING);
-    console.log('Showing the playing screen.');
+    // console.log('Showing the playing screen.');
     this.input.setPaddle(this.paddle);
 
     // Start the game loop
@@ -158,9 +160,16 @@ export class Game {
     // 5. Update the UI stats
     // 6. Show the playing screen
     // 7. Start the game loop
-    console.log('Restarting game.');
 
-    this.init();
+    this.score = 0;
+    this.lives = DEFAULTS.LIVES;
+    this.createEntities();
+    this.setupBricks();
+    this.input.setPaddle(this.paddle);
+    this.ui.updateStats();
+    this.gameState = GAME_STATES.PLAYING;
+    this.ui.showScreen(GAME_STATES.PLAYING);
+    this.gameLoop();
   }
 
   // Main game loop
@@ -227,9 +236,11 @@ export class Game {
     this.ui.updateStats();
     if (this.lives === 0) {
       this.gameOver();
+      return;
     }
-    this.ball.x = this.width / 2;
-    this.ball.y = this.height - 30;
+
+    // Use ball's reset method
+    this.ball.reset();
   }
 
   // Handle game over
